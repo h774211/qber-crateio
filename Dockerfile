@@ -36,5 +36,5 @@ ENV PATH $CRATE_HOME;$JAVA_HOME;$PATH
 ENV CRATE_CLASSPATH $CRATE_HOME/bin
 EXPOSE 4200
 
-CMD ["/usr/share/crate/bin/crate", "-Des.config=/etc/crate/crate.yml -Des.discovery.zen.ping.unicast.hosts=192.168.1.11"]
+CMD ["/usr/share/crate/bin/crate", "-Des.config=/etc/crate/crate.yml -Des.discovery.zen.ping.unicast.hosts=192.168.1.11:9002"]
 ## END
