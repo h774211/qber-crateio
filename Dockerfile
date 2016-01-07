@@ -1,40 +1,35 @@
-#######################################################################
-# Dockerfile to build Crate.io container image
-# Based on Ubuntu
-#######################################################################
+## -*- docker-image-name: "docker-crate" -*-
+#
+# Crate Dockerfile
+# https://github.com/crate/docker-crate
+#
 
-# Set the base image to Ubuntu
-FROM ubuntu:12.04
+FROM java:8-jre
+MAINTAINER Crate Technology GmbH <office@crate.io>
 
-# File Author / Maintainer
-MAINTAINER Mitchell Wong Ho <oreomitch@gmail.com>
+RUN apt-get update && \
+    apt-get install -y python3 && \
+    rm -rf /var/lib/apt && \
+    ln -s /usr/bin/python3 /usr/bin/python
 
-RUN echo "deb http://archive.ubuntu.com/ubuntu precise universe" >> /etc/apt/sources.list
-RUN apt-get update
+ENV CRATE_VERSION 0.52.4
+RUN mkdir /crate && \
+  wget -nv -O - "https://cdn.crate.io/downloads/releases/crate-$CRATE_VERSION.tar.gz" \
+  | tar -xzC /crate --strip-components=1
 
-# Never ask for confirmations
-ENV DEBIAN_FRONTEND noninteractive
-RUN echo "debconf shared/accepted-oracle-license-v1-1 select true" | /usr/bin/debconf-set-selections
-RUN echo "debconf shared/accepted-oracle-license-v1-1 seen true" | /usr/bin/debconf-set-selections
+ENV PATH /crate/bin:$PATH
 
-# Add oracle-jdk6 to repositories
-RUN apt-get update
-RUN apt-get install python-software-properties -y
-RUN add-apt-repository ppa:webupd8team/java
-RUN apt-get update
-RUN apt-get install oracle-java7-installer -y
-RUN apt-get install oracle-java7-set-default -y
+VOLUME ["/data"]
 
+ADD config/crate.yml /crate/config/crate.yml
+ADD config/logging.yml /crate/config/logging.yml
 
-RUN add-apt-repository ppa:crate/stable
-RUN apt-get update
-RUN apt-get install crate -y --force-yes
+WORKDIR /data
 
-ENV JAVA_HOME /usr/bin/java
-ENV CRATE_HOME /usr/share/crate
-ENV PATH $CRATE_HOME;$JAVA_HOME;$PATH
-ENV CRATE_CLASSPATH $CRATE_HOME/bin
-EXPOSE 4200
+# http: 4200 tcp
+# transport: 4300 tcp
+EXPOSE 4200 4300
 
-CMD ["/usr/share/crate/bin/crate", "-Des.config=/etc/crate/crate.yml -Des.discovery.zen.ping.unicast.hosts=192.168.1.11:9002"]
+CMD ["crate", "-Des.config=/etc/crate/crate.yml -Des.discovery.zen.ping.unicast.hosts=192.168.1.11:9002"]
+
 ## END
