@@ -30,6 +30,6 @@ WORKDIR /data
 # transport: 4300 tcp
 EXPOSE 4200 4300
 
-CMD ["crate", "-Des.config=/etc/crate/crate.yml -Des.discovery.zen.ping.unicast.hosts=192.168.1.11:9002"]
+CMD ["crate", "-Des.config=/etc/crate/crate.yml"]
 
 ## END
