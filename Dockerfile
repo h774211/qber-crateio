@@ -20,16 +20,18 @@ RUN mkdir /crate && \
 ENV PATH /crate/bin:$PATH
 
 VOLUME ["/data"]
+VOLUME ["/crate/coustomConfig"]
 
 ADD config/crate.yml /crate/config/crate.yml
 ADD config/logging.yml /crate/config/logging.yml
 
 WORKDIR /data
 
+
 # http: 4200 tcp
 # transport: 4300 tcp
 EXPOSE 4200 4300
 
-CMD ["crate", "-Des.config=/crate/config/crate.yml"]
+CMD ["crate", "-Des.config=/crate/coustomConfig/crate.yml"]
 
 ## END
