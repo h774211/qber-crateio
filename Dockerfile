@@ -30,6 +30,6 @@ WORKDIR /data
 # transport: 4300 tcp
 EXPOSE 4200 4300
 
-CMD ["crate", "-Des.config=/etc/crate/crate.yml"]
+CMD ["crate", "-Des.config=/crate/config/crate.yml"]
 
 ## END
